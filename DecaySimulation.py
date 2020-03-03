@@ -17,6 +17,7 @@ class DecaySimulation:
     simulationName = "Simulation"
     time = 0
     step = 0
+    N = 0
     
     particleData = []
     times = []
@@ -25,10 +26,14 @@ class DecaySimulation:
     isotopes = []
     particles = []
 
-    def __init__(self):
+    def __init__(self, N):
+        self.clearVariables()
+        
+        self.N = N
+        
         self.initialiseIsotopes()
         
-        for i in range(10000):
+        for i in range(N):
             self.particles.append(copy.copy(self.isotopes[0]))
             self.particles[i].isotopes = self.isotopes
         
@@ -38,6 +43,8 @@ class DecaySimulation:
         return "Decay Simulation"
     
     def initialiseIsotopes(self):
+        self.isotopes.clear()
+        
         with open('isotopeData.csv') as csvFile:
             csvReader = csv.reader(csvFile, delimiter = ',')
             lineCount = 0
@@ -92,6 +99,16 @@ class DecaySimulation:
             iCount = pNames.count(self.isotopes[i].shortName)
             self.particleData[i].append(iCount)
             
+    def clearVariables(self):
+        self.time = 0
+        self.step = 0
+        
+        self.isotopes.clear()
+        self.particles.clear()
+        self.particleData.clear()
+        self.times.clear()
+        self.steps.clear()
+            
     def plotData(self):
         try:
             os.mkdir(self.simulationName)
@@ -102,7 +119,8 @@ class DecaySimulation:
         plt.xlabel('t /s')
         plt.ylabel('N')
         plt.legend(bbox_to_anchor=(1.25, 1.1))
-        plt.title("Population of isotopes over time")
+        plt.title("Population of isotopes over time (N = " + str(self.N) + ")")
+        plt.tight_layout()
         plt.plot()
         try:
             plt.savefig(self.simulationName + "/time.png")
@@ -114,7 +132,8 @@ class DecaySimulation:
         plt.xlabel('steps')
         plt.ylabel('N')
         plt.legend(bbox_to_anchor=(1.25, 1.1))
-        plt.title("Population of isotopes per step")
+        plt.title("Population of isotopes per step (N = " + str(self.N) + ")")
+        plt.tight_layout()
         plt.plot()
         try:
             plt.savefig(self.simulationName + "/steps.png")
@@ -128,7 +147,8 @@ class DecaySimulation:
             plt.xlabel('t /s')
             plt.ylabel('N')
             plt.legend()
-            plt.title("Population of " + iName + " over time")
+            plt.title("Population of " + iName + " over time (N = " + str(self.N) + ")")
+            plt.tight_layout()
             plt.plot()
             try:
                 plt.savefig(self.simulationName + "/" + iName + ".png")

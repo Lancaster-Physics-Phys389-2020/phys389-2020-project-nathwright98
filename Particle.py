@@ -59,14 +59,15 @@ class Particle:
                 if(i.shortName == decayMode.decayProduct):
                     isotope = i
             
-            self.Name = isotope.Name
-            self.shortName = isotope.shortName
-            self.massNumber = isotope.massNumber
-            self.atomicNumber = isotope.atomicNumber
-            self.halfLife = isotope.halfLife
-            self.decayModes = isotope.decayModes
-            self.timeRemaining = isotope.halfLife
-            self.stable = isotope.stable
+            if isotope != None:
+                self.Name = isotope.Name
+                self.shortName = isotope.shortName
+                self.massNumber = isotope.massNumber
+                self.atomicNumber = isotope.atomicNumber
+                self.halfLife = isotope.halfLife
+                self.decayModes = isotope.decayModes
+                self.timeRemaining = isotope.halfLife
+                self.stable = isotope.stable
                     
                 
                 
