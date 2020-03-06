@@ -6,6 +6,9 @@ Created on Tue Feb 25 09:19:20 2020
 """
 
 class DecayMode:
+    """
+    Defines a decay mode for a particle, with a defined decay product, decay particle, and a probability that this decay mode is chosen.
+    """
     decayProduct = ""
     decayParticle = None
     probability = 0
