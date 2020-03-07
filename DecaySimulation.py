@@ -80,7 +80,7 @@ class DecaySimulation:
                 #Increase the line count variable each time a line is read
                 lineCount += 1
                 
-    def findLowestHalfLife(self):
+    def findLowestRemaining(self):
         """
         Finds the particle in the list with the lowest half life, then returns this value.
         """
@@ -89,7 +89,7 @@ class DecaySimulation:
             #Exclude stable particles as they have no half-life value
             if p.stable != True:
                 tempParticles.append(p)
-        return float(min(i.halfLife for i in tempParticles))
+        return float(min(i.timeRemaining for i in tempParticles))
     
     def checkIfComplete(self):
         """
@@ -118,7 +118,7 @@ class DecaySimulation:
         Simulates one time step, in which all particles have their remaining time variable decremented by an amount of time equal to the lowest half life.
         """
         #Determine the time to simulate by calling a function to return the lowest half time
-        timeToSimulate = self.findLowestHalfLife()
+        timeToSimulate = self.findLowestRemaining()
         #Add the simulated time to a total time variable
         self.time += timeToSimulate
         #Increment the step variable by one so that the number of steps in the simulation can be counted

@@ -39,7 +39,7 @@ class Particle:
         """
         Functions as a setter method to set the value of 'timeRemaining'.
         """
-        if(t <= 0):
+        if(t <= 0 and self.stable == False):
             #If a half-life has elapsed, check if the particle will decay
             self.checkDecay()
             #Set the time remaining back to the value of the half-life, so that if the particle does not decay it begins counting down again until another half-life has elapsed
@@ -72,7 +72,7 @@ class Particle:
             isotope = None
             for i in self.isotopes:
                 #Find the particle in the 'isotopes' list with an ID matching that of the decay particle defined in the decay mode
-                if(i.shortName == decayMode.decayProduct):
+                if(decayMode != None and i.shortName == decayMode.decayProduct):
                     isotope = i
             
             #If a valid isotope has been found, change the variables of this particle such that it takes the properties of the new isotope
