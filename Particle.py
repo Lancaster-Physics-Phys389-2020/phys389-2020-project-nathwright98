@@ -5,32 +5,38 @@ Created on Tue Feb 25 09:10:37 2020
 @author: Nathan
 """
 import random
+import numpy as np
 
 class Particle:
     """
-    Defines a particle with a name, a short name (to function as a simple identifier), a mass number and atomic number, a half life, some predefined decay modes, a variable to determine how long before the particle reaches it's half life, and a boolean to show whether it is stable.
+    Defines a particle with a name, a short name (to function as a simple identifier), a mass number and atomic number, a decay constant, some predefined decay modes, a variable to determine how long before the particle reaches it's half life, and a boolean to show whether it is stable.
     """
     Name = ""
     shortName = ""
     massNumber = 0
     atomicNumber = 0
-    halfLife = 0
+    decayConstant = 0
+    decayLife = 0
     decayModes = []
     #Define a variable to track how much time before a half-life is elapsed
     timeRemaining = 0
     stable = False
+    accuracy = 0
     
     isotopes = []
     
-    def __init__(self, Name, shortName, massNumber, atomicNumber, halfLife, decayModes, stable):
+    def __init__(self, Name, shortName, massNumber, atomicNumber, halfLife, decayModes, stable, accuracy):
         self.Name = Name
         self.shortName = shortName
         self.massNumber = massNumber
         self.atomicNumber = atomicNumber
-        self.halfLife = halfLife
+        self.decayConstant = np.log(2)/halfLife
+        #Set a decay life variable for the particle based on the accuracy value of the simulation, which is the time it will take for the amount of particles to equal 1/accuracy times the initial amount
+        self.decayLife = np.log(accuracy)/self.decayConstant
         self.decayModes = decayModes
-        self.timeRemaining = halfLife
+        self.timeRemaining = self.decayLife
         self.stable = stable
+        self.accuracy = accuracy
         
     def __repr__(self):
         return 'Particle: %s (%s), [N: %s, Z: %s], half-life: %s'%(self.Name, self.shortName, self.massNumber, self.atomicNumber, self.halfLife)
@@ -40,18 +46,18 @@ class Particle:
         Functions as a setter method to set the value of 'timeRemaining'.
         """
         if(t <= 0 and self.stable == False):
-            #If a half-life has elapsed, check if the particle will decay
+            #If a decay life has elapsed, check if the particle will decay
             self.checkDecay()
-            #Set the time remaining back to the value of the half-life, so that if the particle does not decay it begins counting down again until another half-life has elapsed
-            self.timeRemaining = self.halfLife
+            #Set the time remaining back to the value of the decay life, so that if the particle does not decay it begins counting down again until another half-life has elapsed
+            self.timeRemaining = self.decayLife
         else: self.timeRemaining = t
         
     def checkDecay(self):
         """
         Checks if the particle will decay, and determines the particle to which it will decay.
         """
-        #50% chance for particle to decay after each half-life
-        if(random.random() > 0.5):
+        #Determine whether a particle will decay based on a random number and the probability of decaying after one decay life
+        if(random.random() > 1/self.accuracy):
             #Generate a random float between 0 and 100 which will determine the branch that is taken
             branchChance = random.random() * 100
             branchCumulative = 0
@@ -81,9 +87,9 @@ class Particle:
                 self.shortName = isotope.shortName
                 self.massNumber = isotope.massNumber
                 self.atomicNumber = isotope.atomicNumber
-                self.halfLife = isotope.halfLife
+                self.decayLife = isotope.decayLife
                 self.decayModes = isotope.decayModes
-                self.timeRemaining = isotope.halfLife
+                self.timeRemaining = isotope.decayLife
                 self.stable = isotope.stable
                     
                 

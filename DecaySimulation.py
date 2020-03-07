@@ -14,12 +14,13 @@ import os
 
 class DecaySimulation:
     """
-    Defines a simulation with given parameters which will then simulate the decay of a number of particles, continuing until all remaining particles are stable.
+    Defines a simulation with given parameters which will then simulate the decay of a number of particles, at a given level of accuracy, continuing until all remaining particles are stable.
     """
     simulationName = "Simulation"
     time = 0
     step = 0
     N = 0
+    accuracy = 0
     
     particleData = []
     times = []
@@ -28,11 +29,12 @@ class DecaySimulation:
     isotopes = []
     particles = []
 
-    def __init__(self, N):
+    def __init__(self, N, accuracy):
         #Clear all remaining variables in case this class is called more than once.
         self.clearVariables()
         
         self.N = N
+        self.accuracy = accuracy
         #Define a list of isotopes
         self.initialiseIsotopes()
         #TEMPORARY: instantiate N particles with the same properties as the first isotope in the list
@@ -74,7 +76,7 @@ class DecaySimulation:
                     #If the half-life cell contains the string 'stable', the isotope is stable
                     else: stable = True
                     #Append a new Particle object to the 'isotopes' list
-                    self.isotopes.append(Particle(row[0],row[1],eval(row[2]),eval(row[3]),eval(row[4]),decayModes,stable))
+                    self.isotopes.append(Particle(row[0],row[1],eval(row[2]),eval(row[3]),eval(row[4]),decayModes,stable,self.accuracy))
                     #Append a new empty list to the particleData list
                     self.particleData.append([])
                 #Increase the line count variable each time a line is read
@@ -82,11 +84,11 @@ class DecaySimulation:
                 
     def findLowestRemaining(self):
         """
-        Finds the particle in the list with the lowest half life, then returns this value.
+        Finds the particle in the list with the lowest remaining time, then returns this value.
         """
         tempParticles = []
         for p in self.particles:
-            #Exclude stable particles as they have no half-life value
+            #Exclude stable particles as they have no decay life value
             if p.stable != True:
                 tempParticles.append(p)
         return float(min(i.timeRemaining for i in tempParticles))
@@ -172,7 +174,7 @@ class DecaySimulation:
         plt.xlabel('t /s')
         plt.ylabel('N')
         plt.legend(bbox_to_anchor=(1.25, 1.1))
-        plt.title("Population of isotopes over time (N = " + str(self.N) + ")")
+        plt.title("Population of isotopes over time (N = " + str(self.N) + ", accuracy = " + str(self.accuracy) + ")")
         plt.tight_layout()
         plt.plot()
         #Attempt to save a plot in the directory created earlier, otherwise save it in the same directory as this file
@@ -187,7 +189,7 @@ class DecaySimulation:
         plt.xlabel('steps')
         plt.ylabel('N')
         plt.legend(bbox_to_anchor=(1.25, 1.1))
-        plt.title("Population of isotopes per step (N = " + str(self.N) + ")")
+        plt.title("Population of isotopes per step (N = " + str(self.N) + ", accuracy = " + str(self.accuracy) + ")")
         plt.tight_layout()
         plt.plot()
         try:
@@ -203,7 +205,7 @@ class DecaySimulation:
             plt.xlabel('t /s')
             plt.ylabel('N')
             plt.legend()
-            plt.title("Population of " + iName + " over time (N = " + str(self.N) + ")")
+            plt.title("Population of " + iName + " over time (N = " + str(self.N) + ", accuracy = " + str(self.accuracy) + ")")
             plt.tight_layout()
             plt.plot()
             try:
