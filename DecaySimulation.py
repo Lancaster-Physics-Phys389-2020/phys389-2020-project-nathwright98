@@ -29,58 +29,23 @@ class DecaySimulation:
     isotopes = []
     particles = []
 
-    def __init__(self, N, accuracy):
+    def __init__(self, name, N, accuracy, isotopes, particles):
         #Clear all remaining variables in case this class is called more than once.
         self.clearVariables()
         
+        self.Name = name
         self.N = N
         self.accuracy = accuracy
-        #Define a list of isotopes
-        self.initialiseIsotopes()
-        #TEMPORARY: instantiate N particles with the same properties as the first isotope in the list
-        for i in range(N):
-            self.particles.append(copy.copy(self.isotopes[0]))
-            self.particles[i].isotopes = self.isotopes
+        
+        self.isotopes = isotopes
+        for i in isotopes:
+            self.particleData.append([])
+        self.particles = particles
         #Start the simulation
         self.simulate()
         
     def __repr__(self):
         return "Decay Simulation"
-    
-    def initialiseIsotopes(self):
-        """
-        Defines a list of isotopes using data taken from a CSV file.
-        """
-        
-        #Open the CSV file and read the data
-        with open('isotopeData.csv') as csvFile:
-            csvReader = csv.reader(csvFile, delimiter = ',')
-            lineCount = 0
-
-            for row in csvReader:
-                #Ignore first line as this corresponds to column titles, otherwise iterate through each row of data
-                if lineCount > 0:
-                    decayModes = []
-                    #Define a boolean for stability of the particle, by default false
-                    stable = False
-                    #If the cell corresponding to half-life in the CSV file does not contain the string 'stable', look for decay modes in the appropriate cell
-                    if(row[4] != "stable"):
-                        #Split the string into individual decay modes, using '&' as the split point
-                        for x in row[5].split("&", 1):
-                            #Remove the square brackets that are present for readability in the CSV file
-                            x = x.strip("[]")
-                            #Split the data into individual parts using ',' as the split point
-                            dm = x.split(",", 2)
-                            #Evaluate the data literally and create a DecayMode object using this data
-                            decayModes.append(DecayMode(dm[0],dm[1],ast.literal_eval(dm[2])))
-                    #If the half-life cell contains the string 'stable', the isotope is stable
-                    else: stable = True
-                    #Append a new Particle object to the 'isotopes' list
-                    self.isotopes.append(Particle(row[0],row[1],eval(row[2]),eval(row[3]),eval(row[4]),decayModes,stable,self.accuracy))
-                    #Append a new empty list to the particleData list
-                    self.particleData.append([])
-                #Increase the line count variable each time a line is read
-                lineCount += 1
                 
     def findLowestRemaining(self):
         """
