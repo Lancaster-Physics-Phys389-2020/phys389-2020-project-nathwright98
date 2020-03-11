@@ -34,15 +34,15 @@ class GUIController:
         listLabel.pack()
     
         simulationList = tk.Listbox(gui, width = 25)
-        simulationList.insert(1, 'Uranium-235')
+        simulationList.insert(0, 'Uranium-235')
         simulationList.pack()
         
-        numberLabel = tk.Label(gui, text = "Enter the number of particles to simulate:")
+        numberLabel = tk.Label(gui, text = "Enter the number of particles to simulate (N):")
         numberLabel.pack()
         
         numberText = tk.Text(gui, height = 2, width = 20)
         numberText.pack()
-        numberText.insert(tk.END, "Number of particles to simulate (N)")
+        numberText.insert(tk.END, "100")
         
         accuracyLabel = tk.Label(gui, text = "Select simulation accuracy (lower = more accurate):")
         accuracyLabel.pack()
@@ -50,7 +50,7 @@ class GUIController:
         accuracyScale = tk.Scale(gui, from_=1.01, to = 3.00, resolution = 0.01, orient = tk.HORIZONTAL)
         accuracyScale.pack()
 
-        startButton = tk.Button(gui, text = 'Start Simulation', width = 25, command = lambda: self.beginSimulation(nameText.get("1.0", tk.END), numberText.get("1.0", tk.END), accuracyScale.get()))
+        startButton = tk.Button(gui, text = 'Start Simulation', width = 25, command = lambda: self.beginSimulation(nameText.get("1.0", tk.END), simulationList.curselection(), numberText.get("1.0", tk.END), accuracyScale.get()))
         startButton.pack()
         
         gui.mainloop()
@@ -93,7 +93,7 @@ class GUIController:
                 #Increase the line count variable each time a line is read
                 lineCount += 1
     
-    def beginSimulation(self, name, number, accuracyValue):
+    def beginSimulation(self, name, simulationID, number, accuracyValue):
         particles = []
         N = int(number)
         accuracy = accuracyValue
@@ -101,8 +101,10 @@ class GUIController:
         for i in self.isotopes:
             i.accuracy = accuracy
         
-        for i in range(N):
-            particles.append(copy.copy(self.isotopes[0]))
-            particles[i].isotopes = self.isotopes
-        
-        DecaySimulation(name, N, accuracy, self.isotopes, particles)
+        if simulationID != None:
+            if(simulationID[0] == 0):
+                particle = next((p for p in self.isotopes if p.shortName == "235U"), None)
+                for i in range(N):
+                    particles.append(copy.copy(particle))
+                    particles[i].isotopes = self.isotopes
+            DecaySimulation(name, N, accuracy, self.isotopes, particles)

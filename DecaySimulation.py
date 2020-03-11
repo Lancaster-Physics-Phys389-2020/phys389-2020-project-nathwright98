@@ -37,9 +37,12 @@ class DecaySimulation:
         self.N = N
         self.accuracy = accuracy
         
+        #Allow this class to access the list of isotopes
         self.isotopes = isotopes
+        #For each isotope, add an empty list to the particleData list
         for i in isotopes:
             self.particleData.append([])
+        #Define the list of particles that the simulation will use, based on the list that is passed to this class
         self.particles = particles
         #Start the simulation
         self.simulate()
