@@ -11,6 +11,8 @@ Created on Tue Feb 25 10:33:11 2020
 #import copy
 import matplotlib.pyplot as plt
 import os
+from cycler import cycler
+import numpy as np
 
 class DecaySimulation:
     """
@@ -156,6 +158,10 @@ class DecaySimulation:
             if self.particleDataCheck(i) == True:
                 finalData.append(self.particleData[i])
                 finalIsotopes.append(self.isotopes[i])
+        
+        #Initialise a colour list to use in the plots, avoiding repeated colours
+        colours = plt.cm.rainbow(np.linspace(0,1,len(finalIsotopes)))        
+        plt.rc('axes', prop_cycle = (cycler('color', colours)))
         
         #Create a stacked area plot showing how the numbers of each isotope change over time
         plt.stackplot(self.times, finalData, labels = list(i.shortName for i in finalIsotopes))
