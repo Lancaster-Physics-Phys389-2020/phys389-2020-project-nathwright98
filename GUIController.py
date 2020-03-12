@@ -39,6 +39,11 @@ class GUIController:
         simulationList.insert(0, 'Uranium-235')
         simulationList.insert(1, 'Uranium-238')
         simulationList.insert(2, 'Thorium-232')
+        simulationList.insert(3, 'Protactinium-231')
+        simulationList.insert(4, 'Neptunium-237')
+        simulationList.insert(5, 'Neptunium-239')
+        simulationList.insert(6, 'Americium-243')
+        simulationList.insert(7, 'Curium-247')
         simulationList.pack()
         
         numberLabel = tk.Label(gui, text = "Enter the number of particles to simulate (N):")
@@ -127,6 +132,16 @@ class GUIController:
                 particle = next((p for p in self.isotopes if p.shortName == "238U"), None)
             elif(smID == 2):
                 particle = next((p for p in self.isotopes if p.shortName == "232Th"), None)
+            elif(smID == 3):
+                particle = next((p for p in self.isotopes if p.shortName == "231Pa"), None)
+            elif(smID == 4):
+                particle = next((p for p in self.isotopes if p.shortName == "237Np"), None)
+            elif(smID == 5):
+                particle = next((p for p in self.isotopes if p.shortName == "239Np"), None)
+            elif(smID == 6):
+                particle = next((p for p in self.isotopes if p.shortName == "243Am"), None)
+            elif(smID == 7):
+                particle = next((p for p in self.isotopes if p.shortName == "247Cm"), None)
             for i in range(N):
                     particles.append(copy.copy(particle))
                     particles[i].isotopes = self.isotopes
