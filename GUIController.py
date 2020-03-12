@@ -36,6 +36,7 @@ class GUIController:
         simulationList = tk.Listbox(gui, width = 25)
         simulationList.insert(0, 'Uranium-235')
         simulationList.insert(1, 'Uranium-238')
+        simulationList.insert(2, 'Thorium-232')
         simulationList.pack()
         
         numberLabel = tk.Label(gui, text = "Enter the number of particles to simulate (N):")
@@ -78,7 +79,7 @@ class GUIController:
                     #If the cell corresponding to half-life in the CSV file does not contain the string 'stable', look for decay modes in the appropriate cell
                     if(row[4] != "stable"):
                         #Split the string into individual decay modes, using '&' as the split point
-                        for x in row[5].split("&", 1):
+                        for x in row[5].split("&"):
                             #Remove the square brackets that are present for readability in the CSV file
                             x = x.strip("[]")
                             #Split the data into individual parts using ',' as the split point
@@ -109,6 +110,8 @@ class GUIController:
                 particle = next((p for p in self.isotopes if p.shortName == "235U"), None)
             elif(smID == 1):
                 particle = next((p for p in self.isotopes if p.shortName == "238U"), None)
+            elif(smID == 2):
+                particle = next((p for p in self.isotopes if p.shortName == "232Th"), None)
             for i in range(N):
                     particles.append(copy.copy(particle))
                     particles[i].isotopes = self.isotopes
