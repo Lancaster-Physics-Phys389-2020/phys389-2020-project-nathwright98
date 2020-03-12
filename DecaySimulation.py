@@ -125,6 +125,16 @@ class DecaySimulation:
         self.particleData.clear()
         self.times.clear()
         self.steps.clear()
+        
+    def particleDataCheck(self, i):
+        """
+        Checks the particle data to see if a given entry is empty, indicating that the particle is not present.
+        """
+        present = False
+        for j in self.particleData[i]:
+            if j != 0:
+                present = True
+        return present
             
     def plotData(self):
         """
@@ -138,19 +148,17 @@ class DecaySimulation:
         
         #Create final data list that will be plotted
         finalData = []
+        #Create corresponding list of isotopes which appear in the data
+        finalIsotopes = []
         
         #Remove particleData entries that are empty (when particles are not present)
-        for i in self.particleData:
-            present = False
-            for j in i:
-                if j != 0:
-                    present = True
-            
-            if present == True:
-                finalData.append(i)
+        for i in range(len(self.particleData)):
+            if self.particleDataCheck(i) == True:
+                finalData.append(self.particleData[i])
+                finalIsotopes.append(self.isotopes[i])
         
         #Create a stacked area plot showing how the numbers of each isotope change over time
-        plt.stackplot(self.times, finalData, labels = list(i.shortName for i in self.isotopes))
+        plt.stackplot(self.times, finalData, labels = list(i.shortName for i in finalIsotopes))
         plt.xlabel('t /s')
         plt.ylabel('N')
         plt.legend(bbox_to_anchor=(1.25, 1.1))
@@ -165,7 +173,7 @@ class DecaySimulation:
         plt.show()
         
         #Create a stacked area plot showing how the numbers of each isotope change between steps
-        plt.stackplot(self.steps, finalData, labels = list(i.shortName for i in self.isotopes))
+        plt.stackplot(self.steps, finalData, labels = list(i.shortName for i in finalIsotopes))
         plt.xlabel('steps')
         plt.ylabel('N')
         plt.legend(bbox_to_anchor=(1.25, 1.1))
@@ -179,9 +187,9 @@ class DecaySimulation:
         plt.show()
         
         #For each individual isotope, create a plot showing how its population changes over time
-        for i in range(len(self.isotopes)):
-            iName = self.isotopes[i].shortName
-            plt.plot(self.times, self.particleData[i], "k-", label = iName)
+        for i in range(len(finalIsotopes)):
+            iName = finalIsotopes[i].shortName
+            plt.plot(self.times, finalData[i], "k-", label = iName)
             plt.xlabel('t /s')
             plt.ylabel('N')
             plt.legend()
@@ -193,5 +201,3 @@ class DecaySimulation:
             except:
                 plt.savefig(self.simulationName + "_" + iName + ".png")
             plt.show()
-        
-        
