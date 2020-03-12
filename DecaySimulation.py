@@ -4,11 +4,11 @@ Created on Tue Feb 25 10:33:11 2020
 
 @author: Nathan
 """
-from Particle import Particle
-from DecayMode import DecayMode
-import csv
-import ast
-import copy
+#from Particle import Particle
+#from DecayMode import DecayMode
+#import csv
+#import ast
+#import copy
 import matplotlib.pyplot as plt
 import os
 
@@ -33,7 +33,6 @@ class DecaySimulation:
         #Clear all remaining variables in case this class is called more than once.
         self.clearVariables()
         
-        self.Name = name
         self.N = N
         self.accuracy = accuracy
         
@@ -137,8 +136,21 @@ class DecaySimulation:
         except:
             pass
         
+        #Create final data list that will be plotted
+        finalData = []
+        
+        #Remove particleData entries that are empty (when particles are not present)
+        for i in self.particleData:
+            present = False
+            for j in i:
+                if j != 0:
+                    present = True
+            
+            if present == True:
+                finalData.append(i)
+        
         #Create a stacked area plot showing how the numbers of each isotope change over time
-        plt.stackplot(self.times, self.particleData, labels = list(i.shortName for i in self.isotopes))
+        plt.stackplot(self.times, finalData, labels = list(i.shortName for i in self.isotopes))
         plt.xlabel('t /s')
         plt.ylabel('N')
         plt.legend(bbox_to_anchor=(1.25, 1.1))
@@ -153,7 +165,7 @@ class DecaySimulation:
         plt.show()
         
         #Create a stacked area plot showing how the numbers of each isotope change between steps
-        plt.stackplot(self.steps, self.particleData, labels = list(i.shortName for i in self.isotopes))
+        plt.stackplot(self.steps, finalData, labels = list(i.shortName for i in self.isotopes))
         plt.xlabel('steps')
         plt.ylabel('N')
         plt.legend(bbox_to_anchor=(1.25, 1.1))

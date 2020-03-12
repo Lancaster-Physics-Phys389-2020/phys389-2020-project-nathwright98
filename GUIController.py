@@ -35,6 +35,7 @@ class GUIController:
     
         simulationList = tk.Listbox(gui, width = 25)
         simulationList.insert(0, 'Uranium-235')
+        simulationList.insert(1, 'Uranium-238')
         simulationList.pack()
         
         numberLabel = tk.Label(gui, text = "Enter the number of particles to simulate (N):")
@@ -102,9 +103,13 @@ class GUIController:
             i.accuracy = accuracy
         
         if simulationID != None:
-            if(simulationID[0] == 0):
+            smID = simulationID[0]
+            particle = None
+            if(smID == 0):
                 particle = next((p for p in self.isotopes if p.shortName == "235U"), None)
-                for i in range(N):
+            elif(smID == 1):
+                particle = next((p for p in self.isotopes if p.shortName == "238U"), None)
+            for i in range(N):
                     particles.append(copy.copy(particle))
                     particles[i].isotopes = self.isotopes
             DecaySimulation(name, N, accuracy, self.isotopes, particles)
