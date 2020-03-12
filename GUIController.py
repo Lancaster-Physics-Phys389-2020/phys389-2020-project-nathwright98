@@ -17,6 +17,8 @@ class GUIController:
     
     isotopes = []
 
+    errorText = None
+
     def __init__(self):
         self.initialiseIsotopes()
         
@@ -51,6 +53,9 @@ class GUIController:
         
         accuracyScale = tk.Scale(gui, from_=1.01, to = 3.00, resolution = 0.01, orient = tk.HORIZONTAL)
         accuracyScale.pack()
+        
+        self.errorText = tk.Label(gui)
+        self.errorText.pack()
 
         startButton = tk.Button(gui, text = 'Start Simulation', width = 25, command = lambda: self.beginSimulation(nameText.get("1.0", tk.END), simulationList.curselection(), numberText.get("1.0", tk.END), accuracyScale.get()))
         startButton.pack()
@@ -64,6 +69,8 @@ class GUIController:
         """
         Defines a list of isotopes using data taken from a CSV file.
         """
+        #Reset list of isotopes incase this function is run twice
+        self.isotopes.clear()
         
         #Open the CSV file and read the data
         with open('isotopeData.csv') as csvFile:
@@ -103,8 +110,16 @@ class GUIController:
         for i in self.isotopes:
             i.accuracy = accuracy
         
-        if simulationID != None:
+        smID = None
+        
+        if len(simulationID) == 0:
+            smID = None
+            self.errorText['text'] = 'ERROR: No selected simulation.'
+        else: 
             smID = simulationID[0]
+            self.errorText['text'] = ''
+        
+        if smID != None:
             particle = None
             if(smID == 0):
                 particle = next((p for p in self.isotopes if p.shortName == "235U"), None)
