@@ -42,7 +42,7 @@ class GUIController:
         simulationList.insert(3, 'Protactinium-231')
         simulationList.insert(4, 'Neptunium-237')
         simulationList.insert(5, 'Neptunium-239')
-        simulationList.insert(6, 'Americium-243')
+        simulationList.insert(6, 'Americium-241')
         simulationList.insert(7, 'Curium-247')
         simulationList.pack()
         
@@ -139,7 +139,7 @@ class GUIController:
             elif(smID == 5):
                 particle = next((p for p in self.isotopes if p.shortName == "239Np"), None)
             elif(smID == 6):
-                particle = next((p for p in self.isotopes if p.shortName == "243Am"), None)
+                particle = next((p for p in self.isotopes if p.shortName == "241Am"), None)
             elif(smID == 7):
                 particle = next((p for p in self.isotopes if p.shortName == "247Cm"), None)
             for i in range(N):

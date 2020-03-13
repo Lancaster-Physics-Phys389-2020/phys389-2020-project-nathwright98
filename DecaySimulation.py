@@ -160,14 +160,16 @@ class DecaySimulation:
                 finalIsotopes.append(self.isotopes[i])
         
         #Initialise a colour list to use in the plots, avoiding repeated colours
-        colours = plt.cm.rainbow(np.linspace(0,1,len(finalIsotopes)))        
+        colours = plt.cm.rainbow(np.linspace(0,1,len(finalIsotopes)))   
         plt.rc('axes', prop_cycle = (cycler('color', colours)))
+        #Set the figure size
+        plt.rcParams["figure.figsize"] = (8,6)
         
         #Create a stacked area plot showing how the numbers of each isotope change over time
         plt.stackplot(self.times, finalData, labels = list(i.shortName for i in finalIsotopes))
         plt.xlabel('t /s')
         plt.ylabel('N')
-        plt.legend()
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=3)
         plt.title("Population of isotopes over time (N = " + str(self.N) + ", accuracy = " + str(self.accuracy) + ")")
         plt.tight_layout()
         plt.plot()
@@ -182,7 +184,7 @@ class DecaySimulation:
         plt.stackplot(self.steps, finalData, labels = list(i.shortName for i in finalIsotopes))
         plt.xlabel('steps')
         plt.ylabel('N')
-        plt.legend()
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=3)
         plt.title("Population of isotopes per step (N = " + str(self.N) + ", accuracy = " + str(self.accuracy) + ")")
         plt.tight_layout()
         plt.plot()
