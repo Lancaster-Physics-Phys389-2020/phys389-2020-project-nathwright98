@@ -67,3 +67,17 @@ Polonium-213,213Po,213,84,4.20E-06,"[209Pb,a,100]"
 Lead-209,209Pb,209,82,1.95E+02,"[209Bi,b-,100]"
 Bismuth-209,209Bi,209,83,6.00E+26,"[205Tl,a,100]"
 Thallium-205,205Tl,205,81,stable,
+Silicon-22,22Si,22,14,2.90E-02,"[21Mg,b+p,32]&[22Al,b+,68]"
+Magnesium-21,21Mg,21,12,1.22E-01,"[17F,b+a,0.5]&[20Ne,b+p,32.5]&[21Na,b+,67]"
+Fluorine-17,17F,17,9,6.45E+01,"[17O,b+,100]"
+Oxygen-17,17O,17,8,stable,
+Neon-20,20Ne,20,10,stable,
+Sodium-21,21Na,21,11,2.25E+01,"[21Ne,b+,100]"
+Neon-21,21Ne,21,10,stable,
+Aluminium-22,22Al,22,13,5.90E-02,"[20Ne,b+2p,0.9]&[18Ne,b+a,0.31]&[21Na,b+p,44]&[22Mg,b+,54.79]"
+Neon-18,18Ne,18,10,1.67E+00,"[18F,b+,100]"
+Fluorine-18,18F,18,9,6.59E+03,"[18O,b+,100]"
+Oxygen-18,18O,18,8,stable,
+Magnesium-22,22Mg,22,12,3.88E+00,"[22Na,b+,100]"
+Sodium-22,22Na,22,11,8.21E+07,"[22Ne,b+,100]"
+Neon-22,22Ne,22,10,stable,

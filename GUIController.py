@@ -44,6 +44,7 @@ class GUIController:
         simulationList.insert(5, 'Neptunium-239')
         simulationList.insert(6, 'Americium-241')
         simulationList.insert(7, 'Curium-247')
+        simulationList.insert(8, 'Silicon-22')
         simulationList.pack()
         
         numberLabel = tk.Label(gui, text = "Enter the number of particles to simulate (N):")
@@ -59,7 +60,7 @@ class GUIController:
         accuracyScale = tk.Scale(gui, from_=1.01, to = 3.00, resolution = 0.01, orient = tk.HORIZONTAL)
         accuracyScale.pack()
         
-        self.errorText = tk.Label(gui)
+        self.errorText = tk.Label(gui, fg = 'red')
         self.errorText.pack()
 
         startButton = tk.Button(gui, text = 'Start Simulation', width = 25, command = lambda: self.beginSimulation(nameText.get("1.0", tk.END), simulationList.curselection(), numberText.get("1.0", tk.END), accuracyScale.get()))
@@ -142,6 +143,8 @@ class GUIController:
                 particle = next((p for p in self.isotopes if p.shortName == "241Am"), None)
             elif(smID == 7):
                 particle = next((p for p in self.isotopes if p.shortName == "247Cm"), None)
+            elif(smID == 8):
+                particle = next((p for p in self.isotopes if p.shortName == "22Si"), None)
             for i in range(N):
                     particles.append(copy.copy(particle))
                     particles[i].isotopes = self.isotopes
