@@ -7,29 +7,34 @@ Created on Tue Mar 10 22:25:53 2020
 
 import tkinter as tk
 from DecaySimulation import DecaySimulation
-from Particle import Particle
+from ComplexParticle import ComplexParticle
 from DecayMode import DecayMode
 import csv
 import ast
 import copy
 
 class GUIController:
-    
+    """
+    Creates a GUI through which the user can define variables for a simulation which they can then run.
+    """
     isotopes = []
     
     master = None
-    errorText = None
+    infoText = None
 
     def __init__(self):
         self.initialiseIsotopes()
         
+        #Create the GUI
         gui = tk.Tk()
         self.master = gui
+        #Title the GUI window
         gui.title('Nuclear Decay Simulation')
         
         nameLabel = tk.Label(gui, text = "Enter simulation name:")
         nameLabel.pack()
         
+        #Create a box in which the user can define a name for their simulation
         nameText = tk.Text(gui, height = 2, width = 20)
         nameText.pack()
         nameText.insert(tk.END, "Simulation Name")
@@ -37,6 +42,7 @@ class GUIController:
         listLabel = tk.Label(gui, text = "Select a simulation:")
         listLabel.pack()
     
+        #Create a list of simulations the user can pick from
         simulationList = tk.Listbox(gui, width = 25)
         simulationList.insert(0, 'Uranium-235')
         simulationList.insert(1, 'Uranium-238')
@@ -49,25 +55,30 @@ class GUIController:
         simulationList.insert(8, 'Silicon-22')
         simulationList.pack()
         
-        numberLabel = tk.Label(gui, text = "Enter the number of particles to simulate (N) [WARNING: large N may take a long time]:")
+        numberLabel = tk.Label(gui, text = "Enter the number of particles to simulate (N):")
         numberLabel.pack()
         
+        #Allow the user to select how many particles they wish to simulate
         numberText = tk.Text(gui, height = 2, width = 20)
         numberText.pack()
         numberText.insert(tk.END, "100")
         
-        accuracyLabel = tk.Label(gui, text = "Select simulation accuracy (lower = more accurate) [WARNING: very low accuracy may take a long time]:")
+        accuracyLabel = tk.Label(gui, text = "Select simulation accuracy (lower = more accurate):")
         accuracyLabel.pack()
         
+        #Allow the user to define an accuracy for the simulation
         accuracyScale = tk.Scale(gui, from_=1.01, to = 3.00, resolution = 0.01, orient = tk.HORIZONTAL)
         accuracyScale.pack()
         
-        self.errorText = tk.Label(gui, fg = 'red')
-        self.errorText.pack()
-
+        #Create a text box where information on the status of the simulation can be provided to the user
+        self.infoText = tk.Label(gui)
+        self.infoText.pack()
+        
+        #Create a start button which, upon being pressed, will run the beginSimulation function
         startButton = tk.Button(gui, text = 'Start Simulation', width = 25, command = lambda: self.beginSimulation(nameText.get("1.0", tk.END), simulationList.curselection(), numberText.get("1.0", tk.END), accuracyScale.get()))
         startButton.pack()
         
+        #Run the main loop of the GUI
         gui.mainloop()
         
     def __repr__(self):
@@ -104,34 +115,40 @@ class GUIController:
                     #If the half-life cell contains the string 'stable', the isotope is stable
                     else: stable = True
                     #Append a new Particle object to the 'isotopes' list
-                    self.isotopes.append(Particle(row[0],row[1],eval(row[2]),eval(row[3]),eval(row[4]),decayModes,stable,2))
+                    self.isotopes.append(ComplexParticle(row[0],row[1],eval(row[2]),eval(row[3]),eval(row[4]),decayModes,stable,2))
                     #Append a new empty list to the particleData list
                     #self.particleData.append([])
                 #Increase the line count variable each time a line is read
                 lineCount += 1
     
     def beginSimulation(self, name, simulationID, number, accuracyValue):
+        """
+        Begins the simulation by defining the initial variables and passing them to an instance of the DecaySimulation class.
+        """
         particles = []
         N = int(number)
         accuracy = accuracyValue
         
+        #Pass each defined isotope the accuracy value, so that the generated particles can reference this during initialisation
         for i in self.isotopes:
             i.accuracy = accuracy
         
+        #Define a variable to determine the ID of the selected simulation
         smID = None
         
+        #If no simulation was selected, display an error message
         if len(simulationID) == 0:
             smID = None
-            self.errorText['fg'] = 'red'
-            self.errorText['text'] = 'ERROR: No selected simulation.'
+            self.displayMessage('error', 'ERROR: No simulation selected.')
+        #If a simulation was selected, assign the corresponding ID to the smID variable, and inform the user the simulation is running
         else: 
             smID = simulationID[0]
-            self.errorText['fg'] = 'orange'
-            self.errorText['text'] = 'Simulation running...'
-        self.master.update()
+            self.displayMessage('info', 'Simulation running...')
         
+        #If a simulation was selected, populate the list of particles to simulate
         if smID != None:
             particle = None
+            #Select the particle type based on the ID of the simulation
             if(smID == 0):
                 particle = next((p for p in self.isotopes if p.shortName == "235U"), None)
             elif(smID == 1):
@@ -150,11 +167,32 @@ class GUIController:
                 particle = next((p for p in self.isotopes if p.shortName == "247Cm"), None)
             elif(smID == 8):
                 particle = next((p for p in self.isotopes if p.shortName == "22Si"), None)
+            #Add the chosen number of the selected particle type
             for i in range(N):
                     particles.append(copy.copy(particle))
+                    #Pass the list of isotopes to each particle so that it can be referenced
                     particles[i].isotopes = self.isotopes
+            #Run the decay simulation by calling the DecaySimulation class
             DecaySimulation(name, N, accuracy, self.isotopes, particles)
             
-            self.errorText['fg'] = 'green'
-            self.errorText['text'] = 'Simulation complete!'
-            self.master.update()
+            #Once the simulation is complete, display a success message
+            self.displayMessage('success', 'Simulation complete!')
+            
+    def displayMessage(self, msgType, msgText):
+        """
+        Writes a message of the selected message type (error, information, or success) in the information text box.
+        """
+        #Select a colour for the text depending on the type of message
+        if msgType == 'error':
+            colourID = 'red'
+        elif msgType == 'info':
+            colourID = 'orange'
+        elif msgType == 'success':
+            colourID = 'green'
+        
+        #Set the text colour
+        self.infoText['fg'] = colourID
+        #Set the contents of the text box
+        self.infoText['text'] = msgText
+        #Update the UI
+        self.master.update()

@@ -11,12 +11,8 @@ from Particle import Particle
 
 class ComplexParticle(Particle):
     """
-    Defines a particle with a name, a short name (to function as a simple identifier), a mass number and atomic number, a decay constant, some predefined decay modes, a variable to determine how long before the particle reaches it's half life, and a boolean to show whether it is stable.
+    Defines a more complex particle with a decay constant, some predefined decay modes, a variable to determine how long before the particle reaches it's half life, and a boolean to show whether it is stable.
     """
-    Name = ""
-    shortName = ""
-    massNumber = 0
-    atomicNumber = 0
     decayConstant = 0
     decayLife = 0
     decayModes = []
@@ -27,11 +23,10 @@ class ComplexParticle(Particle):
     
     isotopes = []
     
-    def __init__(self, Name, shortName, massNumber, atomicNumber, halfLife, decayModes, stable, accuracy):
-        self.Name = Name
-        self.shortName = shortName
-        self.massNumber = massNumber
-        self.atomicNumber = atomicNumber
+    def __init__(self, Name, shortName, massNumber, atomicNumber, halfLife, decayModes, stable, accuracy):   
+        #Set variables that are present in the base class
+        Particle.__init__(self, Name, shortName, massNumber, atomicNumber)
+        #Calculate decay constant for the particle based on its half-life
         self.decayConstant = np.log(2)/halfLife
         #Set a decay life variable for the particle based on the accuracy value of the simulation, which is the time it will take for the amount of particles to equal 1/accuracy times the initial amount
         self.decayLife = np.log(accuracy)/self.decayConstant
