@@ -42,12 +42,16 @@ class ComplexParticle(Particle):
         """
         Functions as a setter method to set the value of 'timeRemaining'.
         """
+        #Define a boolean to determine if the particle deacays
+        isDecaying = False
         if(t <= 0 and self.stable == False):
-            #If a decay life has elapsed, check if the particle will decay
-            self.checkDecay()
+            #If a decay life has elapsed, set isDecaying to True
+            isDecaying =True
             #Set the time remaining back to the value of the decay life, so that if the particle does not decay it begins counting down again until another half-life has elapsed
             self.timeRemaining = self.decayLife
         else: self.timeRemaining = t
+        return isDecaying
+        
         
     def checkDecay(self):
         """
@@ -88,6 +92,10 @@ class ComplexParticle(Particle):
                 self.decayModes = isotope.decayModes
                 self.timeRemaining = isotope.decayLife
                 self.stable = isotope.stable
+                
+            if(decayMode != None):
+                return decayMode.decayParticles
+            else: return None
                     
                 
                 

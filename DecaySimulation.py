@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 import os
 from cycler import cycler
 import numpy as np
+from Particle import Particle
+
 class DecaySimulation():
     """
     Defines a simulation with given parameters which will then simulate the decay of a number of particles, at a given level of accuracy, continuing until all remaining particles are stable.
@@ -28,6 +30,9 @@ class DecaySimulation():
     particleData = []
     times = []
     steps = []
+    
+    totalA = []
+    totalZ = []
     
     isotopes = []
     particles = []
@@ -98,8 +103,13 @@ class DecaySimulation():
         self.step += 1
         for p in self.particles:
             if(p.stable != True):
-                #Decrement the timeRemaining variable of the particle
-                p.setTimeRemaining(p.timeRemaining - timeToSimulate)
+                #Decrement the timeRemaining variable of the particle, return true if it should decay
+                if p.setTimeRemaining(p.timeRemaining - timeToSimulate) == True:
+                    #Set a list of decay products as the returned list from the checkDecay function, which will be None if the particle does not decay
+                    decayParticles = p.checkDecay()
+                    #If such decay products exist, record data about them
+                    if decayParticles != None:
+                        self.recordProducts(decayParticles)
         #At the end of the time-step, record data about the simulation
         self.addData()
     
@@ -116,6 +126,19 @@ class DecaySimulation():
             iCount = pNames.count(self.isotopes[i].shortName)
             #Append the data to the particleData list
             self.particleData[i].append(iCount)
+        #Record data on atomic mass and atomic number to verify the simulation works correctly
+        totalAcount = 0
+        totalZcount = 0
+        #Iterate through particles to find total values
+        for p in self.particles:
+            totalAcount += p.massNumber
+            totalZcount += p.atomicNumber
+        #Iterate through decay products to find total values
+        for p in self.decayParticles:
+            totalAcount += p.massNumber
+            totalZcount += p.atomicNumber
+        self.totalA.append(totalAcount)
+        self.totalZ.append(totalZcount)
             
     def clearVariables(self):
         """
@@ -129,6 +152,8 @@ class DecaySimulation():
         self.particleData.clear()
         self.times.clear()
         self.steps.clear()
+        self.totalA.clear()
+        self.totalZ.clear()
         
     def particleDataCheck(self, i):
         """
@@ -139,6 +164,31 @@ class DecaySimulation():
             if j != 0:
                 present = True
         return present
+    
+    def recordProducts(self, decayParticles):
+        """
+        Record data about the decay products of a particle which has decayed
+        """
+        #Define particles to add to the list based on the decay products value
+        if(decayParticles == "a"):
+            self.decayParticles.append(Particle("Alpha [He2+]", "a", 4, 2))
+        elif(decayParticles == "b-"):
+            self.decayParticles.append(Particle("Beta- [Electron]", "b-", 0, -1))
+        elif(decayParticles == "b+"):
+            self.decayParticles.append(Particle("Beta+ [Positron]", "b+", 0, 1))
+        elif(decayParticles == "b-a"):
+            self.decayParticles.append(Particle("Beta- [Electron]", "b-", 0, -1))
+            self.decayParticles.append(Particle("Alpha [He2+]", "a", 4, 2))
+        elif(decayParticles == "b+a"):
+            self.decayParticles.append(Particle("Beta+ [Positron]", "b+", 0, 1))
+            self.decayParticles.append(Particle("Alpha [He2+]", "a", 4, 2))
+        elif(decayParticles == "b+p"):
+            self.decayParticles.append(Particle("Beta+ [Positron]", "b+", 0, 1))
+            self.decayParticles.append(Particle("Proton", "p", 1, 1))
+        elif(decayParticles == "b+p"):
+            self.decayParticles.append(Particle("Beta+ [Positron]", "b+", 0, 1))
+            self.decayParticles.append(Particle("Proton", "p", 1, 1))
+            self.decayParticles.append(Particle("Proton", "p", 1, 1))
             
     def plotData(self):
         """
@@ -211,3 +261,31 @@ class DecaySimulation():
             except:
                 plt.savefig(self.simulationName + "_" + iName + ".png")
             plt.close()
+            
+        #Create a plot showing total atomic mass number over time
+        plt.plot(self.times, self.totalA, "k-", label = "total atomic mass (A)")
+        plt.xlabel('time /s')
+        plt.ylabel('A')
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=3)
+        plt.title("Total atomic mass number across time (N = " + str(self.N) + ", accuracy = " + str(self.accuracy) + ")")
+        plt.tight_layout()
+        plt.plot()
+        try:
+            plt.savefig(self.simulationName + "/totalA.png")
+        except:
+            plt.savefig(self.simulationName + "_totalA.png")
+        plt.close()
+        
+        #Create a plot showing total atomic (proton) number over time
+        plt.plot(self.times, self.totalZ, "k-", label = "total atomic number (Z)")
+        plt.xlabel('time /s')
+        plt.ylabel('Z')
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=3)
+        plt.title("Total atomic (proton) number across time (N = " + str(self.N) + ", accuracy = " + str(self.accuracy) + ")")
+        plt.tight_layout()
+        plt.plot()
+        try:
+            plt.savefig(self.simulationName + "/totalZ.png")
+        except:
+            plt.savefig(self.simulationName + "_totalZ.png")
+        plt.close()
