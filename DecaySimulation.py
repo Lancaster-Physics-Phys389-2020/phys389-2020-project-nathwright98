@@ -13,8 +13,7 @@ import matplotlib.pyplot as plt
 import os
 from cycler import cycler
 import numpy as np
-
-class DecaySimulation:
+class DecaySimulation():
     """
     Defines a simulation with given parameters which will then simulate the decay of a number of particles, at a given level of accuracy, continuing until all remaining particles are stable.
     """
@@ -46,7 +45,7 @@ class DecaySimulation:
         #Define the list of particles that the simulation will use, based on the list that is passed to this class
         self.particles = particles
         #Start the simulation
-        self.simulate()
+        #self.simulate()
         
     def __repr__(self):
         return "Decay Simulation"

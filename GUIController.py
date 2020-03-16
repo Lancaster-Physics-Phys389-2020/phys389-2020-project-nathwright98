@@ -16,13 +16,15 @@ import copy
 class GUIController:
     
     isotopes = []
-
+    
+    master = None
     errorText = None
 
     def __init__(self):
         self.initialiseIsotopes()
         
         gui = tk.Tk()
+        self.master = gui
         gui.title('Nuclear Decay Simulation')
         
         nameLabel = tk.Label(gui, text = "Enter simulation name:")
@@ -120,10 +122,14 @@ class GUIController:
         
         if len(simulationID) == 0:
             smID = None
+            self.errorText['fg'] = 'red'
             self.errorText['text'] = 'ERROR: No selected simulation.'
         else: 
             smID = simulationID[0]
-            self.errorText['text'] = ''
+            self.errorText['fg'] = 'yellow'
+            self.errorText['text'] = 'Simulation running...'
+              
+        self.master.mainloop()
         
         if smID != None:
             particle = None
@@ -149,3 +155,8 @@ class GUIController:
                     particles.append(copy.copy(particle))
                     particles[i].isotopes = self.isotopes
             DecaySimulation(name, N, accuracy, self.isotopes, particles)
+            
+            self.errorText['fg'] = 'green'
+            self.errorText['text'] = 'Simulation complete!'
+            
+            self.master.mainloop()
