@@ -9,6 +9,8 @@ Created on Tue Feb 25 10:33:11 2020
 #import csv
 #import ast
 #import copy
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
 from cycler import cycler
@@ -45,7 +47,7 @@ class DecaySimulation():
         #Define the list of particles that the simulation will use, based on the list that is passed to this class
         self.particles = particles
         #Start the simulation
-        #self.simulate()
+        self.simulate()
         
     def __repr__(self):
         return "Decay Simulation"
@@ -177,7 +179,7 @@ class DecaySimulation():
             plt.savefig(self.simulationName + "/time.png")
         except:
             plt.savefig(self.simulationName + "_time.png")
-        plt.show()
+        plt.close()
         
         #Create a stacked area plot showing how the numbers of each isotope change between steps
         plt.stackplot(self.steps, finalData, labels = list(i.shortName for i in finalIsotopes))
@@ -191,7 +193,7 @@ class DecaySimulation():
             plt.savefig(self.simulationName + "/steps.png")
         except:
             plt.savefig(self.simulationName + "_steps.png")
-        plt.show()
+        plt.close()
         
         #For each individual isotope, create a plot showing how its population changes over time
         for i in range(len(finalIsotopes)):
@@ -207,4 +209,4 @@ class DecaySimulation():
                 plt.savefig(self.simulationName + "/" + iName + ".png")
             except:
                 plt.savefig(self.simulationName + "_" + iName + ".png")
-            plt.show()
+            plt.close()

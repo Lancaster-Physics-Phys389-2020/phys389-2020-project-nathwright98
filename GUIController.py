@@ -126,10 +126,9 @@ class GUIController:
             self.errorText['text'] = 'ERROR: No selected simulation.'
         else: 
             smID = simulationID[0]
-            self.errorText['fg'] = 'yellow'
+            self.errorText['fg'] = 'orange'
             self.errorText['text'] = 'Simulation running...'
-              
-        self.master.mainloop()
+        self.master.update()
         
         if smID != None:
             particle = None
@@ -158,5 +157,4 @@ class GUIController:
             
             self.errorText['fg'] = 'green'
             self.errorText['text'] = 'Simulation complete!'
-            
-            self.master.mainloop()
+            self.master.update()
