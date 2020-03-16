@@ -49,14 +49,14 @@ class GUIController:
         simulationList.insert(8, 'Silicon-22')
         simulationList.pack()
         
-        numberLabel = tk.Label(gui, text = "Enter the number of particles to simulate (N):")
+        numberLabel = tk.Label(gui, text = "Enter the number of particles to simulate (N) [WARNING: large N may take a long time]:")
         numberLabel.pack()
         
         numberText = tk.Text(gui, height = 2, width = 20)
         numberText.pack()
         numberText.insert(tk.END, "100")
         
-        accuracyLabel = tk.Label(gui, text = "Select simulation accuracy (lower = more accurate):")
+        accuracyLabel = tk.Label(gui, text = "Select simulation accuracy (lower = more accurate) [WARNING: very low accuracy may take a long time]:")
         accuracyLabel.pack()
         
         accuracyScale = tk.Scale(gui, from_=1.01, to = 3.00, resolution = 0.01, orient = tk.HORIZONTAL)

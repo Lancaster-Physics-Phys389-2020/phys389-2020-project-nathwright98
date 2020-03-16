@@ -31,6 +31,7 @@ class DecaySimulation():
     
     isotopes = []
     particles = []
+    decayParticles = []
 
     def __init__(self, name, N, accuracy, isotopes, particles):
         #Clear all remaining variables in case this class is called more than once.
