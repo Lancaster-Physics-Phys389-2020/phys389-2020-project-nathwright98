@@ -190,7 +190,7 @@ class DecaySimulation():
         elif(decayParticles == "b+p"):
             self.decayParticles.append(Particle("Beta+ [Positron]", "b+", 0, 1))
             self.decayParticles.append(Particle("Proton", "p", 1, 1))
-        elif(decayParticles == "b+p"):
+        elif(decayParticles == "b+2p"):
             self.decayParticles.append(Particle("Beta+ [Positron]", "b+", 0, 1))
             self.decayParticles.append(Particle("Proton", "p", 1, 1))
             self.decayParticles.append(Particle("Proton", "p", 1, 1))
