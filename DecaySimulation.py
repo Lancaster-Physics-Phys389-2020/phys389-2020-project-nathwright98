@@ -37,8 +37,10 @@ class DecaySimulation():
     isotopes = []
     particles = []
     decayParticles = []
+    
+    extraPlots = False
 
-    def __init__(self, name, N, accuracy, isotopes, particles):
+    def __init__(self, name, N, accuracy, isotopes, particles, enableExtraPlots):
         #Clear all remaining variables in case this class is called more than once.
         self.clearVariables()
         
@@ -52,6 +54,8 @@ class DecaySimulation():
             self.particleData.append([])
         #Define the list of particles that the simulation will use, based on the list that is passed to this class
         self.particles = particles
+        
+        self.extraPlots = enableExtraPlots
         #Start the simulation
         self.simulate()
         
@@ -126,19 +130,20 @@ class DecaySimulation():
             iCount = pNames.count(self.isotopes[i].shortName)
             #Append the data to the particleData list
             self.particleData[i].append(iCount)
-        #Record data on atomic mass and atomic number to verify the simulation works correctly
-        totalAcount = 0
-        totalZcount = 0
-        #Iterate through particles to find total values
-        for p in self.particles:
-            totalAcount += p.massNumber
-            totalZcount += p.atomicNumber
-        #Iterate through decay products to find total values
-        for p in self.decayParticles:
-            totalAcount += p.massNumber
-            totalZcount += p.atomicNumber
-        self.totalA.append(totalAcount)
-        self.totalZ.append(totalZcount)
+        #If extra plots are enabled, record data on atomic mass and atomic number to verify the simulation works correctly
+        if self.extraPlots == True:
+            totalAcount = 0
+            totalZcount = 0
+            #Iterate through particles to find total values
+            for p in self.particles:
+                totalAcount += p.massNumber
+                totalZcount += p.atomicNumber
+            #Iterate through decay products to find total values
+            for p in self.decayParticles:
+                totalAcount += p.massNumber
+                totalZcount += p.atomicNumber
+            self.totalA.append(totalAcount)
+            self.totalZ.append(totalZcount)
             
     def clearVariables(self):
         """
@@ -261,31 +266,33 @@ class DecaySimulation():
             except:
                 plt.savefig(self.simulationName + "_" + iName + ".png")
             plt.close()
-            
-        #Create a plot showing total atomic mass number over time
-        plt.plot(self.times, self.totalA, "k-", label = "total atomic mass (A)")
-        plt.xlabel('time /s')
-        plt.ylabel('A')
-        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=3)
-        plt.title("Total atomic mass number across time (N = " + str(self.N) + ", accuracy = " + str(self.accuracy) + ")")
-        plt.tight_layout()
-        plt.plot()
-        try:
-            plt.savefig(self.simulationName + "/totalA.png")
-        except:
-            plt.savefig(self.simulationName + "_totalA.png")
-        plt.close()
         
-        #Create a plot showing total atomic (proton) number over time
-        plt.plot(self.times, self.totalZ, "k-", label = "total atomic number (Z)")
-        plt.xlabel('time /s')
-        plt.ylabel('Z')
-        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=3)
-        plt.title("Total atomic (proton) number across time (N = " + str(self.N) + ", accuracy = " + str(self.accuracy) + ")")
-        plt.tight_layout()
-        plt.plot()
-        try:
-            plt.savefig(self.simulationName + "/totalZ.png")
-        except:
-            plt.savefig(self.simulationName + "_totalZ.png")
-        plt.close()
+        #If user enabled the extra plots option, create these plots
+        if self.extraPlots == True:
+            #Create a plot showing total atomic mass number over time
+            plt.plot(self.times, self.totalA, "k-", label = "total atomic mass (A)")
+            plt.xlabel('time /s')
+            plt.ylabel('A')
+            plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=3)
+            plt.title("Total atomic mass number across time (N = " + str(self.N) + ", accuracy = " + str(self.accuracy) + ")")
+            plt.tight_layout()
+            plt.plot()
+            try:
+                plt.savefig(self.simulationName + "/totalA.png")
+            except:
+                plt.savefig(self.simulationName + "_totalA.png")
+            plt.close()
+        
+            #Create a plot showing total atomic (proton) number over time
+            plt.plot(self.times, self.totalZ, "k-", label = "total atomic number (Z)")
+            plt.xlabel('time /s')
+            plt.ylabel('Z')
+            plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=3)
+            plt.title("Total atomic (proton) number across time (N = " + str(self.N) + ", accuracy = " + str(self.accuracy) + ")")
+            plt.tight_layout()
+            plt.plot()
+            try:
+                plt.savefig(self.simulationName + "/totalZ.png")
+            except:
+                plt.savefig(self.simulationName + "_totalZ.png")
+            plt.close()

@@ -21,6 +21,8 @@ class GUIController:
     
     master = None
     infoText = None
+    
+    extraPlots = None
 
     def __init__(self):
         self.initialiseIsotopes()
@@ -55,7 +57,7 @@ class GUIController:
         simulationList.insert(8, 'Silicon-22')
         simulationList.pack()
         
-        numberLabel = tk.Label(gui, text = "Enter the number of particles to simulate (N):")
+        numberLabel = tk.Label(gui, text = "Enter the number of particles to simulate (N):\n[Large N can take a long time]")
         numberLabel.pack()
         
         #Allow the user to select how many particles they wish to simulate
@@ -63,12 +65,17 @@ class GUIController:
         numberText.pack()
         numberText.insert(tk.END, "100")
         
-        accuracyLabel = tk.Label(gui, text = "Select simulation accuracy (lower = more accurate):")
+        accuracyLabel = tk.Label(gui, text = "Select simulation accuracy (lower = more accurate):\n[Low accuracy can take a long time]")
         accuracyLabel.pack()
         
         #Allow the user to define an accuracy for the simulation
         accuracyScale = tk.Scale(gui, from_=1.01, to = 3.00, resolution = 0.01, orient = tk.HORIZONTAL)
         accuracyScale.pack()
+        
+        self.extraPlots = tk.BooleanVar()
+        #Create a check box to allow the user to enable plotting of extra data
+        checkBox = tk.Checkbutton(gui, text = 'Enable plotting of extra data \n [This may slow down the simulation]', variable = self.extraPlots)
+        checkBox.pack()
         
         #Create a text box where information on the status of the simulation can be provided to the user
         self.infoText = tk.Label(gui)
@@ -173,7 +180,7 @@ class GUIController:
                     #Pass the list of isotopes to each particle so that it can be referenced
                     particles[i].isotopes = self.isotopes
             #Run the decay simulation by calling the DecaySimulation class
-            DecaySimulation(name, N, accuracy, self.isotopes, particles)
+            DecaySimulation(name, N, accuracy, self.isotopes, particles, self.extraPlots.get())
             
             #Once the simulation is complete, display a success message
             self.displayMessage('success', 'Simulation complete!')

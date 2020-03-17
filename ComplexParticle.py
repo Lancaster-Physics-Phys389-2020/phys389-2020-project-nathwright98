@@ -92,7 +92,8 @@ class ComplexParticle(Particle):
                 self.decayModes = isotope.decayModes
                 self.timeRemaining = isotope.decayLife
                 self.stable = isotope.stable
-                
+            
+            #If a decay mode exists, return the particle involved in the decay
             if(decayMode != None):
                 return decayMode.decayParticles
             else: return None
