@@ -26,6 +26,7 @@ class GUIController:
     extraPlots = None
     
     percentageText = None
+    resultsText = None
 
     def __init__(self):
         self.initialiseIsotopes()
@@ -91,6 +92,10 @@ class GUIController:
         #Create a start button which, upon being pressed, will run the beginSimulation function
         startButton = tk.Button(gui, text = 'Start Simulation', width = 25, command = lambda: self.beginSimulation(nameText.get("1.0", tk.END), simulationList.curselection(), numberText.get("1.0", tk.END), accuracyScale.get()))
         startButton.pack()
+        
+        #Create a text box to show final isotope counts
+        self.resultsText  = tk.Label(gui)
+        self.resultsText.pack()
         
         #Run the main loop of the GUI
         gui.mainloop()
@@ -190,7 +195,7 @@ class GUIController:
                     #Pass the list of isotopes to each particle so that it can be referenced
                     particles[i].isotopes = self.isotopes
             #Run the decay simulation by calling the DecaySimulation class
-            DecaySimulation(trueName, N, accuracy, self.isotopes, particles, self.extraPlots.get(), self.master, self.percentageText)
+            DecaySimulation(trueName, N, accuracy, self.isotopes, particles, self.extraPlots.get(), self.master, self.percentageText, self.resultsText)
             
             #Once the simulation is complete, display a success message and show the location in which the plots have been saved
             if(os.path.isdir(os.getcwd()+'\\'+trueName) == True):

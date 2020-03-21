@@ -12,12 +12,11 @@ Created on Tue Feb 25 10:33:11 2020
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import os
 from cycler import cycler
 import numpy as np
 from Particle import Particle
 import sys
-import tkinter as tk
+import os
 
 class DecaySimulation():
     """
@@ -44,8 +43,9 @@ class DecaySimulation():
     
     gui = None
     percentageText = None
+    resultsText = None
 
-    def __init__(self, name, N, accuracy, isotopes, particles, enableExtraPlots, gui, pText):
+    def __init__(self, name, N, accuracy, isotopes, particles, enableExtraPlots, gui, pText, rText):
         #Clear all remaining variables in case this class is called more than once.
         self.clearVariables()
         
@@ -67,6 +67,7 @@ class DecaySimulation():
         #Assign variables relating to the GUI, used to provide a percentage completion
         self.gui = gui
         self.percentageText = pText
+        self.resultsText = rText
         
         #Start the simulation
         self.simulate()
@@ -241,6 +242,16 @@ class DecaySimulation():
             if self.particleDataCheck(i) == True:
                 finalData.append(self.particleData[i])
                 finalIsotopes.append(self.isotopes[i])
+        
+        #Create an empty string to populate with data about results        
+        results = ""
+        #Iterate through each isotope and append the count to the results string
+        for i in range(len(finalIsotopes)):
+            results += (finalIsotopes[i].Name + ": " + str(finalData[i][-1]) + "\r")
+        #Display the results string on the GUI, if it exists
+        if(self.resultsText != None):
+            self.resultsText['text'] = results
+            self.gui.update()
         
         #Initialise a colour list to use in the plots, avoiding repeated colours
         colours = plt.cm.rainbow(np.linspace(0,1,len(finalIsotopes)))   
