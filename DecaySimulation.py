@@ -16,6 +16,8 @@ import os
 from cycler import cycler
 import numpy as np
 from Particle import Particle
+import sys
+import tkinter as tk
 
 class DecaySimulation():
     """
@@ -39,10 +41,15 @@ class DecaySimulation():
     decayParticles = []
     
     extraPlots = False
+    
+    gui = None
+    percentageText = None
 
-    def __init__(self, name, N, accuracy, isotopes, particles, enableExtraPlots):
+    def __init__(self, name, N, accuracy, isotopes, particles, enableExtraPlots, gui, pText):
         #Clear all remaining variables in case this class is called more than once.
         self.clearVariables()
+        
+        self.simulationName = name
         
         self.N = N
         self.accuracy = accuracy
@@ -56,6 +63,11 @@ class DecaySimulation():
         self.particles = particles
         
         self.extraPlots = enableExtraPlots
+        
+        #Assign variables relating to the GUI, used to provide a percentage completion
+        self.gui = gui
+        self.percentageText = pText
+        
         #Start the simulation
         self.simulate()
         
@@ -75,9 +87,23 @@ class DecaySimulation():
     
     def checkIfComplete(self):
         """
-        Checks if the simulation is complete by checking if all the particles are stable.
+        Checks if the simulation is complete by checking if all the particles are stable, also calculates a percentage completion.
         """
-        if(any(i.stable == False for i in self.particles)):
+        #Calculate number of stable particles
+        nStable = sum(i.stable == True for i in self.particles)
+        #Calculate percentage completion
+        percentComplete = 100 * nStable / self.N
+        #Print percentage completion to terminal
+        sys.stdout.write("\r")
+        sys.stdout.write(str(percentComplete))
+        sys.stdout.flush()
+        #If GUI is being used, update the GUI with percentage completion
+        if(self.percentageText != None):
+            self.percentageText['text'] = ("Percentage completion: " + str(percentComplete) + "%")
+            self.gui.update()
+        
+        #If not all particles are stable, return False, else return True
+        if(nStable < self.N):
             return False
         else: return True
     

@@ -12,6 +12,7 @@ from DecayMode import DecayMode
 import csv
 import ast
 import copy
+import os
 
 class GUIController:
     """
@@ -23,6 +24,8 @@ class GUIController:
     infoText = None
     
     extraPlots = None
+    
+    percentageText = None
 
     def __init__(self):
         self.initialiseIsotopes()
@@ -81,6 +84,10 @@ class GUIController:
         self.infoText = tk.Label(gui)
         self.infoText.pack()
         
+        #Create a text box to show percentage completion
+        self.percentageText = tk.Label(gui)
+        self.percentageText.pack()
+        
         #Create a start button which, upon being pressed, will run the beginSimulation function
         startButton = tk.Button(gui, text = 'Start Simulation', width = 25, command = lambda: self.beginSimulation(nameText.get("1.0", tk.END), simulationList.curselection(), numberText.get("1.0", tk.END), accuracyScale.get()))
         startButton.pack()
@@ -132,6 +139,9 @@ class GUIController:
         """
         Begins the simulation by defining the initial variables and passing them to an instance of the DecaySimulation class.
         """
+        #Sanitise name input such that it can be used as a filename
+        trueName = "".join(x for x in name if x.isalnum())
+        
         particles = []
         N = int(number)
         accuracy = accuracyValue
@@ -180,10 +190,12 @@ class GUIController:
                     #Pass the list of isotopes to each particle so that it can be referenced
                     particles[i].isotopes = self.isotopes
             #Run the decay simulation by calling the DecaySimulation class
-            DecaySimulation(name, N, accuracy, self.isotopes, particles, self.extraPlots.get())
+            DecaySimulation(trueName, N, accuracy, self.isotopes, particles, self.extraPlots.get(), self.master, self.percentageText)
             
-            #Once the simulation is complete, display a success message
-            self.displayMessage('success', 'Simulation complete!')
+            #Once the simulation is complete, display a success message and show the location in which the plots have been saved
+            if(os.path.isdir(os.getcwd()+'\\'+trueName) == True):
+                self.displayMessage('success', 'Simulation complete! \rPlots saved in ' + os.getcwd() + '\\' + trueName)
+            else: self.displayMessage('success', 'Simulation complete! \rPlots saved in ' + os.getcwd())
             
     def displayMessage(self, msgType, msgText):
         """
