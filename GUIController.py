@@ -148,7 +148,15 @@ class GUIController:
         trueName = "".join(x for x in name if x.isalnum())
         
         particles = []
-        N = int(number)
+        
+        #Try to set N to be an integer equal to the selected value
+        try:
+            N = int(number)
+        except:
+            N = None
+        
+        
+            
         accuracy = accuracyValue
         
         #Pass each defined isotope the accuracy value, so that the generated particles can reference this during initialisation
@@ -162,13 +170,19 @@ class GUIController:
         if len(simulationID) == 0:
             smID = None
             self.displayMessage('error', 'ERROR: No simulation selected.')
-        #If a simulation was selected, assign the corresponding ID to the smID variable, and inform the user the simulation is running
+        #If N is not a number, trigger an error message
+        elif(N == None):
+            self.displayMessage("error", "ERROR: Invalid number of particles. Please type an integer value.")
+        #If N is less than 1, trigger an error message
+        elif(N < 1):
+            self.displayMessage("error", "ERROR: N must be at least 1.")
+        #If a simulation was selected, and N is a valid integer greater than 0, assign the corresponding ID to the smID variable, and inform the user the simulation is running
         else: 
             smID = simulationID[0]
             self.displayMessage('info', 'Simulation running...')
         
-        #If a simulation was selected, populate the list of particles to simulate
-        if smID != None:
+        #If a valid simulation was selected, populate the list of particles to simulate
+        if (smID != None):
             particle = None
             #Select the particle type based on the ID of the simulation
             if(smID == 0):
