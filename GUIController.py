@@ -23,6 +23,7 @@ class GUIController:
     master = None
     infoText = None
     
+    enableTimeLimit = None
     extraPlots = None
     
     percentageText = None
@@ -76,9 +77,22 @@ class GUIController:
         accuracyScale = tk.Scale(gui, from_=1.01, to = 3.00, resolution = 0.01, orient = tk.HORIZONTAL)
         accuracyScale.pack()
         
+        self.enableTimeLimit = tk.BooleanVar()
+        #Create a check box to allow the user to enable a time limit, stopping the simulation after a certain time
+        checkBox = tk.Checkbutton(gui, text = 'Enable time limit (stops the simulation after a certain time)', variable = self.enableTimeLimit)
+        checkBox.pack()
+        
+        numberLabel = tk.Label(gui, text = "Enter the time limit (in seconds) you would like \n[Note this will only take effect if you have checked the box above\n and that the percentage completion does not account for stopping the simulation early]")
+        numberLabel.pack()
+        
+        #Allow the user to select a time limit, if necessary
+        timeLimitText = tk.Text(gui, height = 2, width = 20)
+        timeLimitText.pack()
+        timeLimitText.insert(tk.END, "N/A")
+        
         self.extraPlots = tk.BooleanVar()
         #Create a check box to allow the user to enable plotting of extra data
-        checkBox = tk.Checkbutton(gui, text = 'Enable plotting of extra data \n [This may slow down the simulation]', variable = self.extraPlots)
+        checkBox = tk.Checkbutton(gui, text = 'Enable plotting of extra data \n[This may slow down the simulation]', variable = self.extraPlots)
         checkBox.pack()
         
         #Create a text box where information on the status of the simulation can be provided to the user
@@ -90,7 +104,7 @@ class GUIController:
         self.percentageText.pack()
         
         #Create a start button which, upon being pressed, will run the beginSimulation function
-        startButton = tk.Button(gui, text = 'Start Simulation', width = 25, command = lambda: self.beginSimulation(nameText.get("1.0", tk.END), simulationList.curselection(), numberText.get("1.0", tk.END), accuracyScale.get()))
+        startButton = tk.Button(gui, text = 'Start Simulation', width = 25, command = lambda: self.beginSimulation(nameText.get("1.0", tk.END), simulationList.curselection(), numberText.get("1.0", tk.END), accuracyScale.get(), timeLimitText.get("1.0", tk.END)))
         startButton.pack()
         
         #Create a text box to show final isotope counts
@@ -140,7 +154,7 @@ class GUIController:
                 #Increase the line count variable each time a line is read
                 lineCount += 1
     
-    def beginSimulation(self, name, simulationID, number, accuracyValue):
+    def beginSimulation(self, name, simulationID, number, accuracyValue, selectedTimeLimit):
         """
         Begins the simulation by defining the initial variables and passing them to an instance of the DecaySimulation class.
         """
@@ -155,8 +169,16 @@ class GUIController:
         except:
             N = None
         
+        timeLimit = None
+        #If the option is checked, try to set timeLimit to a float equal to the selected value
+        if(self.enableTimeLimit.get() == True):
+            try:
+                timeLimit = float(selectedTimeLimit)
+            except:
+                pass
         
-            
+        print(self.enableTimeLimit.get())
+        
         accuracy = accuracyValue
         
         #Pass each defined isotope the accuracy value, so that the generated particles can reference this during initialisation
@@ -176,6 +198,12 @@ class GUIController:
         #If N is less than 1, trigger an error message
         elif(N < 1):
             self.displayMessage("error", "ERROR: N must be at least 1.")
+        #If the time limit was enabled, check the value is a valid float
+        elif(self.enableTimeLimit.get() == True and timeLimit == None):
+            self.displayMessage("error", "ERROR: Time limit is not a valid float.")
+        #If the time limit was enabled, check the value is greater than 0
+        elif(self.enableTimeLimit.get() == True and timeLimit <= 0):
+            self.displayMessage("error", "ERROR: Time limit must be greater than 0.")
         #If a simulation was selected, and N is a valid integer greater than 0, assign the corresponding ID to the smID variable, and inform the user the simulation is running
         else: 
             smID = simulationID[0]
@@ -209,7 +237,7 @@ class GUIController:
                     #Pass the list of isotopes to each particle so that it can be referenced
                     particles[i].isotopes = self.isotopes
             #Run the decay simulation by calling the DecaySimulation class
-            DecaySimulation(trueName, N, accuracy, self.isotopes, particles, self.extraPlots.get(), self.master, self.percentageText, self.resultsText)
+            DecaySimulation(trueName, N, accuracy, self.isotopes, particles, timeLimit, self.extraPlots.get(), self.master, self.percentageText, self.resultsText)
             
             #Once the simulation is complete, display a success message and show the location in which the plots have been saved
             if(os.path.isdir(os.getcwd()+'\\'+trueName) == True):

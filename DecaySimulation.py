@@ -39,13 +39,14 @@ class DecaySimulation():
     particles = []
     decayParticles = []
     
+    timeLimit = None
     extraPlots = False
     
     gui = None
     percentageText = None
     resultsText = None
 
-    def __init__(self, name, N, accuracy, isotopes, particles, enableExtraPlots, gui, pText, rText):
+    def __init__(self, name, N, accuracy, isotopes, particles, timeLimit, enableExtraPlots, gui, pText, rText):
         #Clear all remaining variables in case this class is called more than once.
         self.clearVariables()
         
@@ -62,7 +63,9 @@ class DecaySimulation():
         #Define the list of particles that the simulation will use, based on the list that is passed to this class
         self.particles = particles
         
+        self.timeLimit = timeLimit
         self.extraPlots = enableExtraPlots
+        print(self.timeLimit)
         
         #Assign variables relating to the GUI, used to provide a percentage completion
         self.gui = gui
@@ -88,8 +91,10 @@ class DecaySimulation():
     
     def checkIfComplete(self):
         """
-        Checks if the simulation is complete by checking if all the particles are stable, also calculates a percentage completion.
+        Checks if the simulation is complete by checking if all the particles are stable, or if the time limit has been reached, also calculates a percentage completion.
         """
+        if(self.timeLimit != None and self.time >= self.timeLimit):
+            return True
         #Calculate number of stable particles
         nStable = sum(i.stable == True for i in self.particles)
         #Calculate percentage completion
@@ -114,7 +119,7 @@ class DecaySimulation():
         """
         #Record data before the first step of the simulation takes place
         self.addData()
-        #While there are still unstable particles, continue simulating time steps
+        #While there are still unstable particles, or the time is less than the time limit, continue simulating time steps
         while(self.checkIfComplete() == False):
             #Simulate one time step
             self.timestep()
