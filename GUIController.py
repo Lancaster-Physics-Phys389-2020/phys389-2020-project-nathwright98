@@ -79,7 +79,7 @@ class GUIController:
         
         self.enableTimeLimit = tk.BooleanVar()
         #Create a check box to allow the user to enable a time limit, stopping the simulation after a certain time
-        checkBox = tk.Checkbutton(gui, text = 'Enable time limit (stops the simulation after a certain time)', variable = self.enableTimeLimit)
+        checkBox = tk.Checkbutton(gui, text = 'Enable time limit (stops the simulation after a certain simulated time)', variable = self.enableTimeLimit)
         checkBox.pack()
         
         numberLabel = tk.Label(gui, text = "Enter the time limit (in seconds) you would like \n[Note this will only take effect if you have checked the box above and that the\npercentage completion does not account for stopping the simulation early]")
