@@ -19,4 +19,4 @@ The 'Start Simulation' button can be pressed once all desired variables have bee
 
 At the end of a simulation, a list will be displayed showing how many particles of each isotope were present at the end of the simulation. In some cases, this list can be cut off. This seems to happen as a result of increased text size on Windows machines. This can be alleviated by resetting the text size to 100%.
 
-The plots made by a simulation should be saved in an appropriately named directory alongside the simulation files.
+The plots made by a simulation should be saved in an appropriately named directory alongside the simulation files. Otherwise, they will be saved individually alongside the simulation files.
