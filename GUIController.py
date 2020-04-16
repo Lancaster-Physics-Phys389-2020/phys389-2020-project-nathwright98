@@ -82,7 +82,7 @@ class GUIController:
         checkBox = tk.Checkbutton(gui, text = 'Enable time limit (stops the simulation after a certain simulated time)', variable = self.enableTimeLimit)
         checkBox.pack()
         
-        numberLabel = tk.Label(gui, text = "Enter the time limit (in seconds) you would like \n[Note this will only take effect if you have checked the box above and that the\npercentage completion does not account for stopping the simulation early]")
+        numberLabel = tk.Label(gui, text = "Enter the time limit (in seconds) you would like:\n[Note this will only take effect if you have checked the box above and that the\npercentage completion does not account for stopping the simulation early]")
         numberLabel.pack()
         
         #Allow the user to select a time limit, if necessary
