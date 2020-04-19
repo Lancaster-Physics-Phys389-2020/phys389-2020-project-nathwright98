@@ -4,11 +4,6 @@ Created on Tue Feb 25 10:33:11 2020
 
 @author: Nathan
 """
-#from Particle import Particle
-#from DecayMode import DecayMode
-#import csv
-#import ast
-#import copy
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
