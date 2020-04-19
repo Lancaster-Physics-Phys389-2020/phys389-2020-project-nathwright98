@@ -60,7 +60,6 @@ class DecaySimulation():
         
         self.timeLimit = timeLimit
         self.extraPlots = enableExtraPlots
-        print(self.timeLimit)
         
         #Assign variables relating to the GUI, used to provide a percentage completion
         self.gui = gui

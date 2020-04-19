@@ -177,8 +177,6 @@ class GUIController:
             except:
                 pass
         
-        print(self.enableTimeLimit.get())
-        
         accuracy = accuracyValue
         
         #Pass each defined isotope the accuracy value, so that the generated particles can reference this during initialisation
